@@ -1,0 +1,140 @@
+<html>
+<head>
+<style type="text/css">
+
+#login
+{
+	border-style: dotted;
+	border-color: black;
+	border-collapse: collapse;
+	border-width: 1px;
+	width: 23%;
+	padding: 5px 5px 5px 5px;
+	border-radius:5px;
+	padding-left: 25px;
+	margin: 10px 10px 10px 10px;
+	}
+	
+#login_tbl
+{
+	border-collapse: collapse;
+	font-family: arial;
+	width: 100%;
+	height: 16%;
+	margin-top: 10px;
+	
+	}
+#login_tble td
+{
+	border-collapse: collapse;
+	padding: 5px 5px 5px 5px;
+	text-align: left;
+	}
+#xss
+{
+	border-style: dotted;
+	border-color: black;
+	border-collapse: collapse;
+	border-width: 1px;
+	width: 20%;
+	padding: 5px 5px 5px 5px;
+	border-radius:5px;
+	margin: 10px 10px 10px 10px;
+	}
+</style>
+</head>
+<?php
+
+$con = mysql_connect('localhost','root','');
+if (!$con)
+  {
+  die('Could not connect: ' . mysql_error());
+  }
+
+$db = mysql_select_db('users', $con);
+
+session_start();
+require_once('nocsrf.php');
+$token = NoCSRF::generate( 'csrf_token' );
+?>
+<body>
+
+<div id="login">
+
+<table id="login_tbl">
+<caption>Login</caption>
+<form method="post" name="login" action="sql_injection.php">
+<tr>
+		<td>User Name:</td>
+		<td><input type="text" name="uname"></td>
+</tr>
+<tr>
+		<td>Password:</td>
+		<td><input type="password" name="pass"></td>
+</tr>
+<tr>
+<td colspan="2" align="center"><input type="submit" value="Login"></td>
+<input type="hidden" name="csrf_token" value="<?php echo $inst->token; ?>">
+</tr>
+</form>
+</table>
+
+</div>
+<div id="xss">
+
+Add your comment:<br>
+<form method="post" name="cmt" action="xss_attack.php"> 
+<textarea cols="36" rows="5" name="comment"></textarea><br>
+<input type="submit" value="Add"/>
+</form>
+</div>
+<div>
+
+<table>
+<caption>Sign Up</caption>
+<form method="post" name="signup1" action="plain_pass_attack.php">
+<tr>
+		<td>Name:</td>
+		<td><input  type="text" name="name"/></td>
+</tr>
+<tr>
+		<td>Email-id:</td>
+		<td><input  type="text" name="email"/></td>
+</tr>
+<tr>
+		<td>Password:</td>
+		<td><input  type="password" name="pass"/></td>
+</tr>
+<tr>
+	<td colspan="2" align="center"><input type="submit" value="Sign Up">
+	
+</tr>
+</form>
+</table>
+
+</div>
+<form method="post" name="upload" action="file_upload.php">
+<br>Upload File (Only gif image):<br>
+<input type="file" name="up_file" size="30">
+<br>
+<input type="submit" value="Upload">
+</form>
+<br><br>
+<form method="post" name="csrf" action="csrf_attack.php">
+<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
+Check for CSRF attack
+<input type="submit" value="Check">
+</form>
+<br>
+ <form method="get" name="include" action="include.php">
+   Select Profession:<select name="profession">
+      <option value="engineer">Engineer</option>
+      <option value="doctor">Doctor</option>
+      <option value="artist">Artist</option>
+   </select>
+   <input type="submit" name ="include" value="Submit">
+</form>
+
+</body>
+</form>
+</html>
